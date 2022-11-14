@@ -50,6 +50,7 @@
                 >获取验证码</van-button>
               </template>
             </van-field>
+
              <div class="login-btn-wrap">
               <van-button
                 class="login-btn"
@@ -108,9 +109,10 @@ export default {
       try {
         const { data } = await login(this.user)
         Toast.success('登录成功')
-        // 或 this.@toast.success 不用定义Toast
         // 将后端返回的用户登录状态 放入vuex
         this.$store.commit('setUser', data.data)
+        // 登录成功 跳转回原页面
+        this.$router.back()
       } catch (err) {
         console.log(err)
         Toast.fail('登录失败，手机号或验证码错误')
