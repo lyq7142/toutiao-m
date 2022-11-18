@@ -148,7 +148,7 @@ export default {
         color: #fff;
       }
       .update-btn {
-        height: 32px;
+        height: 55px;
         font-size: 10px;
         color: #666;
       }

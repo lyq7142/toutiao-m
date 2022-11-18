@@ -163,7 +163,8 @@ export default {
 <style lang="less" scoped>
 .login-container {
   .login-btn-wrap {
-    padding: 26px 16px;
+    // padding: 26px 16px;
+    padding: 53px 33px;
     .login-btn {
       background-color: #6db4fb;
       border: none;
@@ -173,11 +174,12 @@ export default {
     }
   }
   .send-btn {
-    width: 170px;
-    height: 40px;
+    // width: 152px;
+    height: 46px;
+    line-height: 46px;
     background-color: #ededed;
     .van-button__text {
-      font-size: 11px;
+      font-size: 22px;
       color: #666;
     }
   }

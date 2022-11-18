@@ -8,8 +8,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    // 懒加载
-    component: () => import('@/views/login/')
+    component: () => import('@/views/login/') // 懒加载
   },
   {
     path: '/',
@@ -36,6 +35,11 @@ const routes = [
         component: () => import('@/views/my/')
       }
     ]
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: () => import('@/views/search/')
   }
 ]
 
