@@ -1,10 +1,19 @@
 // 请求模块
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 // 非组件模块中获取store必须通过这种方式 单独加载store
 import store from '@/store/index'
 const request = axios.create({
   // 接口的基准路径
-  baseURL: 'http://toutiao.itheima.net/'
+  baseURL: 'http://toutiao.itheima.net/',
+  transformResponse: [function (data) {
+    try {
+      return JSONbig.parse(data)
+    } catch (err) {
+      // console.log('转换失败', err)
+      return data
+    }
+  }]
 })
 
 // 请求拦截器

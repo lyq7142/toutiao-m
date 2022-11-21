@@ -147,8 +147,9 @@ export default {
         font-size: 15px;
         color: #fff;
       }
-      .update-btn {
+      .update-btn {  // 编辑资料 按钮
         height: 55px;
+        line-height: 55px;
         font-size: 10px;
         color: #666;
       }
