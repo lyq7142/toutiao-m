@@ -7,8 +7,9 @@
       left-arrow
       @click-left="$router.back()"
     />
-    <h1 class="title">{{article.title}}</h1>
-    <van-cell center class="user-info">
+    <div class="article-wrap">
+      <h1 class="title">{{article.title}}</h1>
+      <van-cell center class="user-info">
       <div slot="title" class="name">{{article.aut_name}}</div>
       <van-image
         class="avatar"
@@ -27,14 +28,21 @@
         :loading="isFollowLoading"
         @click="onFollow"
       >{{article.is_followed ? '已关注' : '关注'}}</van-button>
-    </van-cell>
-    <div
-      class="markdown-body"
-      v-html="article.content"
-      ref="article-content"
-    ></div>
-    <!-- <van-divider>正文结束</van-divider> -->
-    <!-- 文章评论列表 -->
+      </van-cell>
+      <div
+        class="markdown-body"
+        v-html="article.content"
+        ref="article-content"
+      ></div>
+      <van-divider>正文结束</van-divider>
+      <!-- 文章评论列表 -->
+      <comment-list
+        :source="articleId"
+        :list="commentList"
+        @update-total-count="totalCommentCount = $event"
+        @reply-click="onReplyClick"
+      />
+    </div>
 
     <!-- 底部区域 -->
     <div class="article-bottom">
@@ -43,10 +51,11 @@
         type="default"
         round
         size="small"
+        @click="isPostShow = true"
       >写评论</van-button>
       <van-icon
         name="comment-o"
-        info="123"
+        :info="totalCommentCount"
         color="#777"
       />
       <van-icon
@@ -59,11 +68,32 @@
         :color="article.attitude === 1 ? 'pink': '#777'"
         @click="onLike"
       />
-      <van-icon
-        name="share"
-        color="#777"
-      />
+      <van-icon name="share" color="#777" />
     </div>
+    <!-- 发布评论 -->
+    <van-popup
+      v-model="isPostShow"
+      position="bottom"
+      :style="{ height: '20%' }"
+    >
+      <post-comment
+        :target="articleId"
+        @post-success="onPostSuccess"
+      />
+    </van-popup>
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="isReplyShow"
+      position="bottom"
+    >
+      <comment-reply
+        v-if="isReplyShow"
+        :comment="replyComment"
+        :article-id="articleId"
+        @close="isReplyShow = false"
+      />
+    </van-popup>
+
   </div>
 </template>
 
@@ -72,13 +102,19 @@ import './github-markdown.css'
 import { getArticleById, addCollect, deleteCollect, addLike, deleteLike } from '@/api/article'
 import { ImagePreview } from 'vant'
 import { addFollow, deleteFollow } from '@/api/user'
-
+import CommentList from './components/comment-list'
+import PostComment from './components/post-comment'
+import CommentReply from './components/comment-reply'
 // 组件中获取动态路由参数
 // 方法一：this.$route.params.articleId
 // 方法二：props 传参
 export default {
   name: 'ArticleIndex',
-  components: {},
+  components: {
+    CommentList,
+    PostComment,
+    CommentReply
+  },
   props: {
     articleId: {
       type: [String, Number, Object],
@@ -89,7 +125,12 @@ export default {
     return {
       article: {}, // 文章数据
       isFollowLoading: false, // 关注用户按钮的loading
-      isCollectLoading: false // 收藏的loading状态
+      isCollectLoading: false, // 收藏的loading状态
+      isPostShow: false, // 控制发布评论的显示状态
+      commentList: [], // 文章评论列表
+      totalCommentCount: 0, // 评论总数量
+      isReplyShow: false, // 控制回复的显示状态
+      replyComment: {} // 当前回复评论对象
     }
   },
   computed: {},
@@ -166,12 +207,29 @@ export default {
         this.article.attitude = 1
       }
       this.$toast.success(`${this.article.attitude === 1 ? '' : '取消'}点赞成功`)
+    },
+    onPostSuccess (comment) {
+      this.commentList.unshift(comment)
+      this.totalCommentCount++ // 更新评论总数
+      this.isPostShow = false
+    },
+    onReplyClick (comment) {
+      this.replyComment = comment
+      this.isReplyShow = true
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.article-wrap {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 90px;
+  bottom: 95px;
+  overflow-y: auto;
+}
 .title {
   font-size: 40px;
   color: #3a3a3a;
@@ -223,29 +281,5 @@ export default {
     line-height: 60px;
     color: #a7a7a7;
   }
-  // /deep/ .van-icon {
-  //   font-size: 40px;
-  // }
-  // .comment-icon {
-  //   top: 2px;
-  //   color: #777;
-  //   .van-info {
-  //     font-size: 16px;
-  //     background-color: #e22829;
-  //   }
-  // }
-  // .btn-item {
-  //   border: none;
-  //   padding: 0;
-  //   height: 40px;
-  //   line-height: 40px;
-  //   color: #777777
-  // }
-  // .collect-btn--collected {
-  //   color: #ffa500;
-  // }
-  // .like-btn--liked {
-  //   color: #e5645f;
-  // }
 }
 </style>
