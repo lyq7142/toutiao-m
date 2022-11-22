@@ -55,7 +55,6 @@ export default {
       this.$emit('post-success', data.data.new_obj)
       this.$toast.success('发布成功')
       this.message = ''
-      // 最好发布成功后 刷新下，数据渲染不及时，点赞错位
     }
   }
 }

@@ -5,7 +5,7 @@
         title="注册 / 登录"
         left-arrow
         @click-left="$router.back()"
-        />
+    />
         <!-- $router.back()返回上一页 -->
         <!-- 登录表单 -->
         <van-form
